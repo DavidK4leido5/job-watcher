@@ -1,0 +1,43 @@
+name: Job watcher
+
+on:
+  schedule:
+    # Every 30 minutes (GitHub may delay a few minutes)
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run watcher
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          ALERT_TO: ${{ secrets.ALERT_TO }}
+          MIN_SCORE: ${{ vars.MIN_SCORE }}
+          SEED: ${{ vars.SEED }}
+        run: python watcher.py
+
+      - name: Persist seen.json
+        run: |
+          if git diff --quiet -- seen.json; then
+            echo "seen.json unchanged"
+            exit 0
+          fi
+          git config user.name "job-watcher[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add seen.json
+          git commit -m "chore: update seen job ids"
+          git push

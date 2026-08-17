@@ -1,0 +1,24 @@
+# Must-hit stack (each line is one keyword/phrase; case-insensitive)
+# Score = how many of these appear in title + description + tags
+react
+next.js
+nextjs
+typescript
+javascript
+node.js
+nodejs
+full stack
+fullstack
+full-stack
+express
+postgresql
+mysql
+docker
+aws
+rest api
+remote
+hybrid
+webflow
+tailwind
+vercel
+ci/cd
