@@ -1,10 +1,15 @@
 name: Job watcher
 
 on:
-  schedule:
-    # Every 30 minutes (GitHub may delay a few minutes)
-    - cron: "*/30 * * * *"
   workflow_dispatch:
+  schedule:
+    - cron: "*/30 * * * *"
+  push:
+    branches: [master, main]
+    paths:
+      - "watcher.py"
+      - "keywords.txt"
+      - ".github/workflows/job-watcher.yml"
 
 permissions:
   contents: write
